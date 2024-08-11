@@ -2,9 +2,16 @@ import scrapy
 import sqlite3
 import atexit
 import logging
-import os
 import smtplib
 import ssl
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+email_password = os.getenv("EMAIL_PASSWORD")
 
 logging.basicConfig(level=logging.INFO)
 
@@ -63,14 +70,18 @@ def check_existing_record(date_posted, title, company, location):
         return cursor.fetchone() is not None
 
 
-def send_email(message):
+def send_email(subject, body):
     host = "smtp.gmail.com"
     port = 465
-
     username = "kalinpetrovbg@gmail.com"
     password = os.getenv("EMAIL_PASSWORD")
 
-    receiver = "kalinpetrovbg@gmail.com"
+    if not password:
+        logging.error("Email password not set in environment variables.")
+        return
+
+    receiver = username
+    message = f"Subject: {subject}\n\n{body}"
     context = ssl.create_default_context()
 
     try:
@@ -110,9 +121,10 @@ def store(extracted):
 
 def finalize_and_send_emails():
     if new_jobs:
-        message = '\n'.join(new_jobs)
-        send_email(message)
-        logging.info(f"Email sent with new jobs.")
+        subject = "New Job Listings"
+        body = "\n".join(new_jobs)
+        send_email(subject, body)
+        logging.info("Email notification sent with new jobs.")
 
 
 def check_location(location):
