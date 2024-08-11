@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3584933f-5927-4faf-9fcc-dc415128b5d1" name="Changes" comment="final version with sending an email" />
+    <list default="true" id="3584933f-5927-4faf-9fcc-dc415128b5d1" name="Changes" comment="update gitignore">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/job-hunt-scraper.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/job-hunt-scraper.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobhunt/jobhunt/spiders/devbg.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobhunt/jobhunt/spiders/devbg.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -196,7 +201,7 @@
       <workItem from="1723299366378" duration="3174000" />
       <workItem from="1723372998527" duration="5327000" />
       <workItem from="1723379060839" duration="6512000" />
-      <workItem from="1723385624749" duration="2531000" />
+      <workItem from="1723385624749" duration="3628000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -270,7 +275,31 @@
       <option name="project" value="LOCAL" />
       <updated>1723388754998</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Merge remote-tracking branch 'origin/main'">
+      <option name="closed" value="true" />
+      <created>1723388864685</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1723388864685</updated>
+    </task>
+    <task id="LOCAL-00011" summary="update gitignore">
+      <option name="closed" value="true" />
+      <created>1723389134783</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1723389134783</updated>
+    </task>
+    <task id="LOCAL-00012" summary="update gitignore">
+      <option name="closed" value="true" />
+      <created>1723389405853</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1723389405853</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,7 +334,9 @@
     <MESSAGE value="adding database" />
     <MESSAGE value="fixing gitignore" />
     <MESSAGE value="final version with sending an email" />
-    <option name="LAST_COMMIT_MESSAGE" value="final version with sending an email" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/main'" />
+    <MESSAGE value="update gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="update gitignore" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/job_hunt_scraper$devbg.coverage" NAME="devbg Coverage Results" MODIFIED="1722768780910" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobhunt/jobhunt/spiders" />

@@ -46,7 +46,8 @@ def create_table():
                 title TEXT,
                 company TEXT,
                 location TEXT,
-                date_posted TEXT
+                date_posted TEXT,
+                link TEXT
             );
             """
         )
@@ -100,18 +101,19 @@ def store(extracted):
         company = extracted["company"]
         location = extracted["location"]
         date_posted = extracted["date_posted"]
+        link = extracted["link"]
 
         if not check_existing_record(date_posted, title, company, location):
             with conn:  # automatically commit or rollback
                 query = """
                     INSERT INTO job_data 
-                    (title, company, location, date_posted) 
-                    VALUES (?, ?, ?, ?)
+                    (title, company, location, date_posted, link) 
+                    VALUES (?, ?, ?, ?, ?)
                 """
-                params = (title, company, location, date_posted)
+                params = (title, company, location, date_posted, link)
                 conn.execute(query, params)
                 logging.info(f"Record added: {title}")
-                new_jobs.append(f"{title} - {company} - {location} - {date_posted}")
+                new_jobs.append(f"{title} - {company} - {location} - {date_posted}\n - {link}\n")
         else:
             logging.info(f"Duplicate found: {date_posted}, {company}")
 
@@ -174,6 +176,7 @@ class DevBgSpider(scrapy.Spider):
             "company": response.meta["company"],
             "location": response.meta["location"],
             "date_posted": date_posted,
+            "link": response.meta["link"]
         }
 
         store(result)
