@@ -4,3 +4,4 @@
 *.db
 *.iml
 *.xml
+.idea/
