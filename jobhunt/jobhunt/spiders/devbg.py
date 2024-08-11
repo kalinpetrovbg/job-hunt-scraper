@@ -1,86 +1,157 @@
 import scrapy
 import sqlite3
+import atexit
+import logging
+import os
+import smtplib
+import ssl
+
+logging.basicConfig(level=logging.INFO)
 
 DOMAIN = "https://dev.bg/company/jobs/python"
 FILTER = "/?_job_location=sofiya%2Cremote&_seniority=mid-level"
+_connection = None
+new_jobs = []
 
-connection = sqlite3.connect("job-hunt.db")
+
+def get_connection():
+    global _connection
+    if _connection is None:
+        _connection = sqlite3.connect("job-hunt.db")
+        atexit.register(close_connection)
+    return _connection
+
+
+def close_connection():
+    global _connection
+    if _connection:
+        _connection.close()
+        _connection = None
+        logging.info("Database connection closed.")
 
 
 def create_table():
-    conn = sqlite3.connect('job-hunt.db')
-    cursor = conn.cursor()
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS job_data (
-        title TEXT,
-        company TEXT,
-        location TEXT,
-        date_posted TEXT
-    );
-    """)
-    conn.commit()
-    conn.close()
+    conn = get_connection()
+    with conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS job_data (
+                title TEXT,
+                company TEXT,
+                location TEXT,
+                date_posted TEXT
+            );
+            """
+        )
+        conn.commit()
 
 
-def check_tables(conn):
-    cursor = conn.cursor()
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    tables = cursor.fetchall()
-    if not tables:
-        create_table()
-    cursor.close()
+def check_existing_record(date_posted, title, company, location):
+    conn = get_connection()
+    with conn:
+        cursor = conn.execute(
+            """
+                SELECT 1
+                FROM job_data 
+                WHERE date_posted = ? 
+                AND title = ? 
+                AND company = ? 
+                AND location = ?
+                """,
+            (date_posted, title, company, location),
+        )
+        return cursor.fetchone() is not None
 
 
-def store(extracted, conn):
-    print(extracted)
-    cursor = conn.cursor()
+def send_email(message):
+    host = "smtp.gmail.com"
+    port = 465
+
+    username = "kalinpetrovbg@gmail.com"
+    password = os.getenv("EMAIL_PASSWORD")
+
+    receiver = "kalinpetrovbg@gmail.com"
+    context = ssl.create_default_context()
+
+    try:
+        with smtplib.SMTP_SSL(host, port, context=context) as server:
+            server.login(username, password)
+            server.sendmail(username, receiver, message)
+            logging.info("Email sent successfully.")
+    except smtplib.SMTPException as e:
+        logging.error(f"Failed to send email: {e}")
+
+
+def store(extracted):
+    conn = get_connection()
     try:
         title = extracted["title"]
         company = extracted["company"]
         location = extracted["location"]
         date_posted = extracted["date_posted"]
-        cursor.execute(
-            "INSERT INTO job_data (title, company, location, date_posted) VALUES(?, ?, ?, ?)",
-            (title, company, location, date_posted),
-        )
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        print("An error occurred:", e)
-    finally:
-        cursor.close()
+
+        if not check_existing_record(date_posted, title, company, location):
+            with conn:  # automatically commit or rollback
+                query = """
+                    INSERT INTO job_data 
+                    (title, company, location, date_posted) 
+                    VALUES (?, ?, ?, ?)
+                """
+                params = (title, company, location, date_posted)
+                conn.execute(query, params)
+                logging.info(f"Record added: {title}")
+                new_jobs.append(f"{title} - {company} - {location} - {date_posted}")
+        else:
+            logging.info(f"Duplicate found: {date_posted}, {company}")
+
+    except sqlite3.DatabaseError as e:
+        logging.error(f"Database error: {e}")
 
 
-def clean_text(text):
-    return ' '.join(text.split())
+def finalize_and_send_emails():
+    if new_jobs:
+        message = '\n'.join(new_jobs)
+        send_email(message)
+        logging.info(f"Email sent with new jobs.")
 
 
-class DevbgSpider(scrapy.Spider):
+def check_location(location):
+    location = " ".join([loc.strip() for loc in location])
+    if "Hybrid" in location:
+        location = "Hybrid"
+    elif "Remote" in location:
+        location = "Remote"
+    else:
+        location = "On site"
+    return location
+
+
+class DevBgSpider(scrapy.Spider):
     name = "devbg"
     allowed_domains = ["dev.bg"]
     start_urls = [f"{DOMAIN + FILTER}"]
+
+    def closed(self, reason):
+        finalize_and_send_emails()  # Send email after spider is closed
 
     def parse(self, response):
         for listing in response.css(".job-list-item"):
             title = listing.css("h6.job-title ::text").get()
             company = listing.css(".company-name ::text").get()
             link = listing.css("a.overlay-link::attr(href)").get()
-
-            location = listing.css(".badge ::text").extract()
-            location = ' '.join([clean_text(l) for l in location if
-                                 l.strip()])  # Joins non-empty, cleaned text segments
-
-            # Optional: refine extraction based on images or additional details
-            if listing.css(".badge img[src*='remote-green.svg']"):
-                location = "Fully Remote"
-            elif listing.css(".badge img[src*='pin.png']"):
-                location = location.strip()  # Assuming 'location' is something like 'София'
+            raw_location = listing.css(".badge ::text").extract()
+            location = check_location(raw_location)
 
             if link:
                 yield response.follow(
                     link,
                     self.parse_job_details,
-                    meta={"title": title, "company": company, "location": location, "link": link},
+                    meta={
+                        "title": title,
+                        "company": company,
+                        "location": location,
+                        "link": link,
+                    },
                 )
 
     def parse_job_details(self, response):
@@ -93,7 +164,7 @@ class DevbgSpider(scrapy.Spider):
             "date_posted": date_posted,
         }
 
-        store(result, connection)
+        store(result)
 
 
-check_tables(connection)
+create_table()
