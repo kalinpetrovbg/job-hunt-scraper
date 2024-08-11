@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3584933f-5927-4faf-9fcc-dc415128b5d1" name="Changes" comment="fixing gitignore">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobhunt/job-hunt.db" beforeDir="false" afterPath="$PROJECT_DIR$/jobhunt/job-hunt.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobhunt/jobhunt/spiders/devbg.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobhunt/jobhunt/spiders/devbg.py" afterDir="false" />
-    </list>
+    <list default="true" id="3584933f-5927-4faf-9fcc-dc415128b5d1" name="Changes" comment="final version with sending an email" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,6 +18,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
@@ -199,7 +196,7 @@
       <workItem from="1723299366378" duration="3174000" />
       <workItem from="1723372998527" duration="5327000" />
       <workItem from="1723379060839" duration="6512000" />
-      <workItem from="1723385624749" duration="2186000" />
+      <workItem from="1723385624749" duration="2531000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -265,7 +262,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723386441863</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="final version with sending an email">
+      <option name="closed" value="true" />
+      <created>1723388754998</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1723388754998</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -299,7 +304,8 @@
     <MESSAGE value="init commit" />
     <MESSAGE value="adding database" />
     <MESSAGE value="fixing gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing gitignore" />
+    <MESSAGE value="final version with sending an email" />
+    <option name="LAST_COMMIT_MESSAGE" value="final version with sending an email" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/job_hunt_scraper$devbg.coverage" NAME="devbg Coverage Results" MODIFIED="1722768780910" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobhunt/jobhunt/spiders" />
